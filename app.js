@@ -1,5 +1,17 @@
 const dayNames = ["НЕДІЛЯ", "ПОНЕДІЛОК", "ВІВТОРОК", "СЕРЕДА", "ЧЕТВЕР", "П'ЯТНИЦЯ", "СУБОТА"];
 
+// Функція для визначення часу пари
+function getLessonTime(num) {
+    const times = {
+        1: "08:00 - 09:20",
+        2: "09:30 - 10:50",
+        3: "11:10 - 12:30",
+        4: "12:40 - 14:00",
+        5: "14:10 - 15:30"
+    };
+    return times[num] || "08:00";
+}
+
 function normalizeText(str) {
     return str.toUpperCase().replace(/0/g, 'О').replace(/00/g, 'ОО').replace(/[ІНЛИ]/g, 'I').trim();
 }
@@ -21,21 +33,24 @@ function generateSchedule() {
         if (selectedCourse !== "all" && db[gName].course !== selectedCourse) continue;
         if (normGName === query || normGName.includes(query) || query.includes(normGName)) { targetGroup = gName; break; }
     }
-    if (!targetGroup) { output.innerHTML = "<p style='color:#64748b; margin-top:20px;'>Групу не знайдено. Спробуйте написати: ОО-73-І</p>"; return; }
+    if (!targetGroup) { output.innerHTML = "<p style='color:#64748b; margin-top:20px;'>Групу не знайдено. Спробуйте: ОО-73-І</p>"; return; }
 
+    // ЛОГІКА: Якщо дати порожні — просто виводимо стабільний тиждень Пн-Пт без прив'язки до чисел місяця
     if (!startVal || !endVal || isNaN(new Date(startVal).getTime()) || isNaN(new Date(endVal).getTime())) {
         for (let dayNum = 1; dayNum <= 5; dayNum++) {
             let allLessons = db[targetGroup].lessons[dayNum] || [];
             let dayCard = document.createElement('div');
             dayCard.className = 'generated-day';
-            dayCard.innerHTML = `<div class="day-header"><span class="day-name">📅 ${dayNames[dayNum]} (Основний розклад) — ${targetGroup}</span></div>`;
+            dayCard.innerHTML = `<div class="day-header"><span class="day-name">📅 ${dayNames[dayNum]} — ${targetGroup}</span></div>`;
+            
             if (allLessons.length === 0) { dayCard.innerHTML += `<div class="no-lessons">Пар немає</div>`; } 
             else {
                 allLessons.forEach(l => {
                     let lessonClass = l.canceled ? 'lesson canceled' : 'lesson';
                     let subStyle = l.canceled ? 'style="text-decoration: line-through; color: #888;"' : '';
                     let badge = l.canceled ? `<span class="cancel-badge">ВІДМІНЕНО</span>` : '';
-                    dayCard.innerHTML += `<div class="${lessonClass}"><span class="time">${l.num} пара</span> ${badge}<div class="subject" ${subStyle}>${l.sub}</div><div class="teacher">${l.t}</div></div>`;
+                    let timeRange = getLessonTime(l.num);
+                    dayCard.innerHTML += `<div class="${lessonClass}"><span class="time">${l.num} пара (${timeRange})</span> ${badge}<div class="subject" ${subStyle}>${l.sub}</div><div class="teacher">${l.t}</div></div>`;
                 });
             }
             output.appendChild(dayCard);
@@ -43,21 +58,24 @@ function generateSchedule() {
         return;
     }
 
+    // Якщо студент САМ обрав період дат в календарі
     let start = new Date(startVal); let end = new Date(endVal);
     for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
         let currentDayOfWeek = d.getDay(); if (currentDayOfWeek === 0 || currentDayOfWeek === 6) continue;
-        let dateNum = d.getDate(); let isEvenNumber = dateNum % 2 === 0; let dayWeekType = isEvenNumber ? "even" : "odd";
+        let dateNum = d.getDate();
         let allLessons = db[targetGroup].lessons[currentDayOfWeek] || [];
-        let activeLessons = allLessons.filter(l => l.type === "always" || l.type === dayWeekType);
 
-        if (activeLessons.length > 0) {
+        if (allLessons.length > 0) {
             let dayCard = document.createElement('div'); dayCard.className = 'generated-day';
             let formattedDate = String(dateNum).padStart(2, '0') + '.' + String(d.getMonth() + 1).padStart(2, '0');
-            dayCard.innerHTML = `<div class="day-header"><span class="day-name">📅 ${dayNames[currentDayOfWeek]} (${formattedDate}) — ${targetGroup}</span><span class="day-type" style="background:${isEvenNumber ? 'rgba(6, 182, 212, 0.15)' : 'rgba(139, 92, 246, 0.15)'}; color:${isEvenNumber ? '#06b6d4' : '#8b5cf6'}">${isEvenNumber ? 'Чисельник' : 'Знаменник'}</span></div>`;
-            activeLessons.forEach(l => {
-                let lessonClass = l.canceled ? 'lesson canceled' : 'lesson'; let subStyle = l.canceled ? 'style="text-decoration: line-through; color: #888;"' : '';
-                let badge = l.canceled ? `<span class="cancel-badge">ВІДМІНЕНО</span>` : (l.type === 'even' ? '<span class="week-indicator type-even">Чис</span>' : (l.type === 'odd' ? '<span class="week-indicator type-odd">Знам</span>' : ''));
-                dayCard.innerHTML += `<div class="${lessonClass}"><span class="time">${l.num} пара</span> ${badge}<div class="subject" ${subStyle}>${l.sub}</div><div class="teacher">${l.t}</div></div>`;
+            dayCard.innerHTML = `<div class="day-header"><span class="day-name">📅 ${dayNames[currentDayOfWeek]} (${formattedDate}) — ${targetGroup}</span></div>`;
+            
+            allLessons.forEach(l => {
+                let lessonClass = l.canceled ? 'lesson canceled' : 'lesson'; 
+                let subStyle = l.canceled ? 'style="text-decoration: line-through; color: #888;"' : '';
+                let badge = l.canceled ? `<span class="cancel-badge">ВІДМІНЕНО</span>` : '';
+                let timeRange = getLessonTime(l.num);
+                dayCard.innerHTML += `<div class="${lessonClass}"><span class="time">${l.num} пара (${timeRange})</span> ${badge}<div class="subject" ${subStyle}>${l.sub}</div><div class="teacher">${l.t}</div></div>`;
             });
             output.appendChild(dayCard);
         }
@@ -65,10 +83,9 @@ function generateSchedule() {
 }
 
 window.onload = function() {
-    const today = new Date(); const nextWeek = new Date(); nextWeek.setDate(today.getDate() + 7);
-    let y1 = today.getFullYear(); let m1 = String(today.getMonth() + 1).padStart(2, '0'); let d1 = String(today.getDate()).padStart(2, '0');
-    document.getElementById('start-date').value = `${y1}-${m1}-${d1}`;
-    let y2 = nextWeek.getFullYear(); let m2 = String(nextWeek.getMonth() + 1).padStart(2, '0'); let d2 = String(nextWeek.getDate()).padStart(2, '0');
-    document.getElementById('end-date').value = `${y2}-${m2}-${d2}`;
-    generateSchedule();
+    // ДАТИ ПРИ ЗАХОДІ ПОВНІСТЮ ПОРОЖНІ ЗА ТВОЇМ БАЖАННЯМ
+    document.getElementById('start-date').value = "";
+    document.getElementById('end-date').value = "";
+    Telegram.WebApp.ready(); 
+    Telegram.WebApp.expand();
 }
