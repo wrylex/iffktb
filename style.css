@@ -1,0 +1,44 @@
+:root {
+    --bg-color: #0b0f19;
+    --card-bg: rgba(30, 41, 59, 0.5);
+    --accent-purple: #8b5cf6;
+    --accent-cyan: #06b6d4;
+    --success-neon: #10b981;
+    --text-color: #f1f5f9;
+    --text-muted: #64748b;
+}
+body { 
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+    background: var(--bg-color); color: var(--text-color); padding: 15px; margin: 0; text-align: center;
+}
+h2 { font-weight: 800; font-size: 1.6em; margin-bottom: 2px; text-shadow: 0 0 10px rgba(6, 182, 212, 0.3); }
+.subtitle { color: var(--accent-cyan); font-size: 0.85em; font-weight: bold; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 2px; }
+.search-panel { 
+    background: var(--card-bg); padding: 20px; border-radius: 16px; backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+    margin-bottom: 25px; text-align: left; border: 1px solid rgba(139, 92, 246, 0.2); box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+.form-group { margin-bottom: 15px; display: flex; flex-direction: column; }
+.form-group label { font-size: 0.8em; color: var(--text-muted); font-weight: 700; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+.input-field { width: 100%; padding: 12px; font-size: 15px; border-radius: 8px; box-sizing: border-box; background: rgba(15, 23, 42, 0.6); color: #fff; border: 1px solid #1e293b; outline: none; transition: all 0.3s ease; }
+.input-field:focus { border-color: var(--accent-cyan); box-shadow: 0 0 12px rgba(6, 182, 212, 0.25); }
+.row-group { display: flex; gap: 12px; }
+.row-group .form-group { flex: 1; margin-bottom: 15px; }
+.submit-btn { width: 100%; padding: 14px; background: linear-gradient(135deg, #059669, var(--success-neon)); color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3); }
+.submit-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(16, 185, 129, 0.5); }
+.submit-btn:active { transform: translateY(1px); }
+.generated-day { background: var(--card-bg); padding: 18px; border-radius: 14px; margin-bottom: 20px; text-align: left; border: 1px solid rgba(255, 255, 255, 0.05); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+.day-header { font-weight: bold; font-size: 1.1em; border-bottom: 2px solid var(--accent-purple); padding-bottom: 8px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
+.day-name { color: #fff; text-shadow: 0 0 8px rgba(139, 92, 246, 0.3); }
+.day-type { font-size: 0.75em; padding: 4px 8px; border-radius: 6px; font-weight: bold; }
+.lesson { padding: 10px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
+.lesson:last-child { border-bottom: none; }
+.time { color: var(--text-muted); font-size: 0.85em; font-weight: 500; }
+.subject { font-weight: bold; font-size: 1.05em; margin: 3px 0; color: #f8fafc; }
+.teacher { color: var(--accent-cyan); font-size: 0.85em; font-weight: 500; }
+.no-lessons { color: var(--text-muted); font-style: italic; padding: 5px 0; }
+.week-indicator { font-size: 0.7em; padding: 2px 6px; border-radius: 4px; margin-left: 6px; font-weight: bold; display: inline-block; }
+.type-even { background: rgba(6, 182, 212, 0.15); color: var(--accent-cyan); }
+.type-odd { background: rgba(139, 92, 246, 0.15); color: var(--accent-purple); }
+.hidden { display: none !important; }
+.canceled { background: rgba(239, 68, 68, 0.1); border-left: 4px solid #ef4444; padding-left: 10px; border-radius: 4px; }
+.cancel-badge { background: #ef4444; color: #fff; font-size: 0.7em; padding: 2px 6px; border-radius: 4px; font-weight: bold; display: inline-block; margin-left: 5px; }

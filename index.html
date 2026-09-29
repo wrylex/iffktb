@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Розумний Розклад ІФФКТБ</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="database.js"></script>
+    <script src="app.js"></script>
+</head>
+<body>
+
+    <h2>ВСП "ІФФКТБ НУХТ"</h2>
+    <div class="subtitle">Інформаційна система розкладу</div>
+    
+    <div class="search-panel">
+        <div class="form-group">
+            <label>Пошук (Група або Прізвище викладача)</label>
+            <input type="text" id="universal-search" class="input-field" placeholder="Введіть напр. ОО-73-І, КН-7-І або ХТРГ-248-І...">
+        </div>
+        <div class="row-group">
+            <div class="form-group">
+                <label>Курс</label>
+                <select id="course-select" class="input-field">
+                    <option value="all">Усі курси</option>
+                    <option value="1">1 курс</option>
+                    <option value="2">2 курс</option>
+                </select>
+            </div>
+        </div>
+        <div class="row-group">
+            <div class="date-field form-group">
+                <label>З дати (опціонально)</label>
+                <input type="date" id="start-date" class="input-field">
+            </div>
+            <div class="date-field form-group">
+                <label>До дати (опціонально)</label>
+                <input type="date" id="end-date" class="input-field">
+            </div>
+        </div>
+        <button class="submit-btn" onclick="generateSchedule()">Показати розклад занять</button>
+    </div>
+    
+    <div id="schedule-output"></div>
+
+</body>
+</html>
